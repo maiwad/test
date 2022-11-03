@@ -1,0 +1,30 @@
+on:
+  #schedule:
+    #- cron:  '0 18 * * 4'
+  workflow_dispatch:
+
+name: diff
+jobs:
+  diff:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Check XyVer
+        run: |  
+          #xy_latest=$(curl -s "https://api.github.com/repos/XTLS/Xray-core/releases/latest" | sed 'y/,/\n/' | grep 'tag_name' | awk -F '"' '{print substr($4,2)}')
+          tagname=$(curl "https://github.com/XTLS/Xray-core/releases" 2>&1 | grep "tree" | grep "data-view-component"  | head -n 1 | awk -F"\"" '{print $2}' | awk -F"/" '{print $5}')
+          xy_current=$(./releases/xy version | awk 'NR==1 {print $2}')
+          #echo xy latest:${xy_latest}
+          echo xy current:${xy_current}
+          echo xy tagname:${tagname}
+        
+      - name: Check CaddyVer
+        run: |  
+          caddy_latest=$(curl -s "https://api.github.com/repos/caddyserver/caddy/releases/latest" | grep "tag_name" | cut -d\" -f4 | sed -e "s/^v//" -e "s/-.$//" | cut -d"v" -f 2)
+          caddy_current=$(./releases/caddy version | cut -d" " -f 1 | cut -d"v" -f 2)
+          echo cddy latest:${caddy_latest}
+          echo cddy current:${caddy_current}
+          
