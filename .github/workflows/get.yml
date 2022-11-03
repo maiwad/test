@@ -1,0 +1,37 @@
+on:
+  #schedule:
+    #- cron:  '0 18 * * 4'
+  workflow_dispatch:
+
+name: get
+jobs:
+  get:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: xy
+        run: |
+          mkdir -p releases
+          cd releases
+          wget -O xy.zip https://github.com/XTLS/Xray-core/releases/download/v1.6.0/Xray-linux-64.zip 
+          unzip xy.zip
+          rm -rf ./xy.zip ./LICENSE ./*.md ./*.dat 
+          mv ./xray ./xy
+
+      - name: caddy
+        run: |
+          wget -O caddy.tar.gz "https://github.com/caddyserver/caddy/releases/download/v2.6.1/caddy_2.6.1_linux_amd64.tar.gz"
+          tar x -z -f caddy.tar.gz -C ./releases caddy
+          rm -f ./caddy.tar.gz ./LICENSE ./*.md
+
+      - name: commit
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git add .
+          git commit --allow-empty -m "$(git log -1 --pretty=%s)"
+          git push
