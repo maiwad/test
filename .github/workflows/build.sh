@@ -2,7 +2,7 @@
 # This is Latest
 # xy_latest=$(curl -s "https://api.github.com/repos/XTLS/Xray-core/releases/latest" | sed 'y/,/\n/' | grep 'tag_name' | awk -F '"' '{print substr($4,2)}')
 # This is Pre-release
-xy_tagname=$(curl "https://github.com/XTLS/Xray-core/releases" 2>&1 | grep "tree" | grep "data-view-component"  | head -n 1 | awk -F"\"" '{print $2}' | awk -F"/" '{print $5}')
+xy_tagname=$(curl "https://github.com/XTLS/Xray-core/releases" 2>&1 | grep "tree" | grep "data-view-component"  | head -n 1 | awk -F"\"" '{print $2}' | awk -F"/" '{print $5}' | cut -d"v" -f 2)
 xy_current=$(./releases/xy version | awk 'NR==1 {print $2}')
 caddy_latest=$(curl -s "https://api.github.com/repos/caddyserver/caddy/releases/latest" | grep "tag_name" | cut -d\" -f4 | sed -e "s/^v//" -e "s/-.$//" | cut -d"v" -f 2)
 caddy_current=$(./releases/caddy version | cut -d" " -f 1 | cut -d"v" -f 2)
