@@ -1,0 +1,24 @@
+name: sh-build
+on:
+  schedule:
+    - cron: "30 0 * * 1"
+  workflow_dispatch:
+jobs:
+  sh-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set variables
+        run: |
+          echo "GOLANG=$(wget -qO- https://raw.githubusercontent.com/actions/go-versions/main/versions-manifest.json | grep 'version' | cut -d\" -f4 | head -1)" >> $GITHUB_ENV
+        shell: bash
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ env.GOLANG }}
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: Build & Push
+        run: |
+          bash .github/workflows/build.sh
