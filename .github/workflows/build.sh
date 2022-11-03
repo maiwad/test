@@ -7,7 +7,7 @@ xy_current=$(./releases/xy version | awk 'NR==1 {print $2}')
 caddy_latest=$(curl -s "https://api.github.com/repos/caddyserver/caddy/releases/latest" | grep "tag_name" | cut -d\" -f4 | sed -e "s/^v//" -e "s/-.$//" | cut -d"v" -f 2)
 caddy_current=$(./releases/caddy version | cut -d" " -f 1 | cut -d"v" -f 2)
 # if [[ ${xy_latest} == ${xy_current} ]]
-if [[ ${xy_tagename} == ${xy_current} ]]
+if [[ ${xy_tagname} == ${xy_current} ]]
 then
     echo 'xy is nothing to do'
 else
